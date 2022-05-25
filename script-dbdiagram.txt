@@ -1,128 +1,56 @@
 
-Table TELEMETRIA as TELE {
-  CODIGO_TELE int [pk, increment]
-  AUTO_NUMERO decimal (18, 0) [NULL] //FK
-  CODIGO_CARRERA int [NULL] //FK
-  CODIGO_SECTOR int [NULL] //FK
-  TELE_AUTO_NUMERO_VUELTA decimal (18, 0) [NULL]
-  TELE_AUTO_DISTANCIA_CARRERA decimal (18, 6) [NULL]
-  TELE_AUTO_DISTANCIA_VUELTA decimal (18, 2) [NULL]
-  TELE_AUTO_TIEMPO_VUELTA decimal (18, 10) [NULL]
-  TELE_AUTO_POSICION decimal (18, 0) [NULL]
-  TELE_AUTO_VELOCIDAD decimal (18, 2) [NULL]
-  TELE_AUTO_COMBUSTIBLE decimal (18, 2) [NULL]
-  CODIGO_TELE_MOTOR int [NULL] // FK
-  CODIGO_TELE_CAJA int [NULL] // FK
-  CODIGO_TELE_NEUMATICO int [NULL] // FK
-  CODIGO_TELE_FRENO int [NULL] // FK
+// Enums
+Enum NEU_CONDICION {
+  VIEJO
+  NUEVO
 }
 
-Ref: TELE.AUTO_NUMERO > AUTO.AUTO_NUMERO
-Ref: TELE.CODIGO_CARRERA > C.CODIGO_CARRERA
-Ref: TELE.CODIGO_SECTOR > S.CODIGO_SECTOR
-Ref: TELE.CODIGO_TELE_MOTOR > TELE_M.CODIGO_TELE_MOTOR
-Ref: TELE.CODIGO_TELE_CAJA > TELE_C.CODIGO_TELE_CAJA
-
-Table TELEMETRIA_MOTOR as TELE_M {
-  CODIGO_TELE_MOTOR int [pk, increment]
-  TELE_MOTOR_NRO_SERIE nvarchar (255) [NULL] //FK
-  TELE_MOTOR_POTENCIA decimal(18, 6) [NULL]
-  TELE_MOTOR_TEMP_ACEITE decimal(18, 6) [NULL]
-  TELE_MOTOR_TEMP_AGUA decimal (18, 6) [NULL]
-  TELE_MOTOR_RPM decimal(18, 6) [NULL]
+// Carreras y circuitos
+Table CIRCUITO {
+  CIRCUITO_CODIGO int [pk]
+  CIRCUITO_NOMBRE nvarchar(255) [NULL]
+  CIRCUITO_PAIS nvarchar(255) [NULL]
 }
-Ref: TELE_M.TELE_MOTOR_NRO_SERIE > MOTOR.MOTOR_NRO_SERIE
-
-Table TELEMETRIA_CAJA as TELE_C {
-  CODIGO_TELE_CAJA int [pk, increment]
-  TELE_CAJA_NRO_SERIE nvarchar (255) [NULL] //FK
-  TELE_CAJA_TEMP_ACEITE decimal(18, 2) [NULL]
-  TELE_CAJA_RPM decimal(18, 2) [NULL]
-  TELE_CAJA_DESGASTE decimal(18, 2) [NULL]
-}
-
-Ref: TELE_C.TELE_CAJA_NRO_SERIE > CAJA.CAJA_NRO_SERIE
-
-Table TELEMETRIA_NEUMATICO as TELE_N {
-  CODIGO_TELE_NEUMATICO int [pk, increment]
-  TELE_NEUMATICO_NRO_SERIE nvarchar (255) [NULL] //FK
-  CODIGO_TELE int [NULL] //FK
-  TELE_NEUMATICO_PRESION decimal(18, 6) [NULL]
-  TELE_NEUMATICO_PROFUNDIDAD decimal(18, 6) [NULL]
-  TELE_NEUMATICO_TEMPERATURA decimal (18, 6) [NULL]
-}
-
-Ref: TELE_N.TELE_NEUMATICO_NRO_SERIE > NEUMATICO.NEUMATICO_NRO_SERIE
-Ref: TELE_N.CODIGO_TELE > TELE.CODIGO_TELE
-
-Table TELEMETRIA_FRENO as TELE_F {
-  CODIGO_TELE_FRENO int [pk, increment]
-  TELE_FRENO_NRO_SERIE nvarchar (255) [NULL] //FK
-  CODIGO_TELE int [NULL] //FK
-  TELE_FRENO_TEMPERATURA decimal (18, 2) [NULL]
-  TELE_FRENO_GROSOR_PASTILLA decimal (18, 2) [NULL]
-}
-Ref: TELE_F.TELE_FRENO_NRO_SERIE > FRENO.FRENO_NRO_SERIE
-Ref: TELE_F.CODIGO_TELE > TELE.CODIGO_TELE
-
 
 Table CARRERA as C {
   CODIGO_CARRERA int [pk]
-  CARRERA_FECHA date[null]
-  CARRERA_CLIMA nvarchar[100] [null]
-  CARRERA_TOTAL_CARRERA decimal (18,2) [null]
-  CARRERA_CANT_VUELTAS int [null]
-  CIRCUITO_CODIGO int [null]// FK 
+  CARRERA_FECHA date
+  CARRERA_CLIMA nvarchar(100) [NULL]
+  CARRERA_TOTAL_CARRERA decimal (18,2) [NULL]
+  CARRERA_CANT_VUELTAS int [NULL]
+  CIRCUITO_CODIGO int [NOT NULL]// FK
 }
 Ref: C.CIRCUITO_CODIGO > CIRCUITO.CIRCUITO_CODIGO
-
-Table CIRCUITO {
-  CIRCUITO_CODIGO int [pk]
-  CIRCUITO_NOMBRE nvarchar[255][null]
-  CIRCUITO_PAIS nvarchar[255][null]
-}
-
-Table SECTOR as S {
-  CODIGO_SECTOR int [pk]
-  SECTRO_DISTANCIA decimal (18,2) [null]
-  SECTOR_TIPO int [null] // FK
-  CIRCUITO_CODIGO int [null] //FK
-}
-Ref: SECTOR.CIRCUITO_CODIGO > CIRCUITO.CIRCUITO_CODIGO
-Ref: SECTOR.SECTOR_TIPO > TIPO_SECTOR.SECTOR_TIPO
 
 Table TIPO_SECTOR {
   SECTOR_TIPO int [pk, increment]
   DESCRIPCION nvarchar (255)
 }
 
-Table AUTO{
-  AUTO_NUMERO int [pk]
-  AUTO_MODELO Nvarchar (255) [null]
-  CODIGO_PILOTO int [NULL] //FK
-  CODIGO_ESCUDERIA int [NULL] //FK
-  MOTOR nvarchar (255) [NULL] //FK 
-  CAJA nvarchar (255) [NULL] //FK
+Table SECTOR as S {
+  CODIGO_SECTOR int [pk]
+  SECTRO_DISTANCIA decimal (18,2) [NULL]
+  SECTOR_TIPO int [NULL] // FK
+  CIRCUITO_CODIGO int [NOT NULL] //FK
 }
-Ref: AUTO.CODIGO_PILOTO - P.CODIGO_PILOTO
-Ref: AUTO.CODIGO_ESCUDERIA - E.CODIGO_ESCUDERIA
-Ref: AUTO.MOTOR - MOTOR.MOTOR_NRO_SERIE
-Ref: AUTO.CAJA - CAJA.CAJA_NRO_SERIE
+Ref: SECTOR.CIRCUITO_CODIGO > CIRCUITO.CIRCUITO_CODIGO
+Ref: SECTOR.SECTOR_TIPO > TIPO_SECTOR.SECTOR_TIPO
 
+// Pilotos, Escuderias, y Autos
 Table PILOTO as P {
   CODIGO_PILOTO int [pk]
-  PILOTO_NOMBRE varchar (50) [null]
-  PILOTO_APELLIDO varchar (50) [null]
-  PILOTO_NACIONALIDAD varchar (50) [null]
-  PILOTO_FECHA_NACIMIENTO datetime [null]
+  PILOTO_NOMBRE varchar (50) [NULL]
+  PILOTO_APELLIDO varchar (50) [NULL]
+  PILOTO_NACIONALIDAD varchar (50) [NULL]
+  PILOTO_FECHA_NACIMIENTO datetime [NULL]
 }
 
 Table ESCUDERIA as E {
   CODIGO_ESCUDERIA int [pk]
-  ESCUDERIA_NOMBRE varchar (50) [null,pk]
-  ESCUDERIA_NACIONALIDAD varchar (50) [null]
+  ESCUDERIA_NOMBRE varchar (50) [NULL]
+  ESCUDERIA_NACIONALIDAD varchar (50) [NULL]
 }
- 
+
 Table MOTOR{
   MOTOR_NRO_SERIE nvarchar (255) [pk]
   MOTOR_MODELO nvarchar (255) [NULL]
@@ -139,6 +67,11 @@ Table FRENO {
   FRENO_TAMANIO_DISCO decimal(18, 2) [NULL]
 }
 
+Table TIPO_NEUMATICO {
+  NEUMATICO_TIPO int [pk, increment]
+  DESCRIPCION nvarchar (255)
+}
+
 Table NEUMATICO{
   NEUMATICO_NRO_SERIE nvarchar (255) [pk]
   NEUMATICO_POSICION nvarchar (255)
@@ -147,16 +80,25 @@ Table NEUMATICO{
 
 Ref: NEUMATICO.NEUMATICO_TIPO > TIPO_NEUMATICO.NEUMATICO_TIPO
 
-Table TIPO_NEUMATICO {
-  NEUMATICO_TIPO int [pk, increment]
-  DESCRIPCION nvarchar (255)
+Table AUTO{
+  AUTO_NUMERO int [pk]
+  AUTO_MODELO Nvarchar (255) [NULL]
+  CODIGO_PILOTO int [not NULL] //FK
+  CODIGO_ESCUDERIA int [not NULL] //FK
+  MOTOR nvarchar (255) [not NULL] //FK
+  CAJA_NRO_SERIE nvarchar (255) [not NULL] //FK
 }
+
+Ref: AUTO.CODIGO_PILOTO - P.CODIGO_PILOTO
+Ref: AUTO.CODIGO_ESCUDERIA - E.CODIGO_ESCUDERIA
+Ref: AUTO.MOTOR - MOTOR.MOTOR_NRO_SERIE
+Ref: AUTO.CAJA_NRO_SERIE - CAJA.CAJA_NRO_SERIE
 
 Table NEUMATICO_POR_AUTO {
   CODIGO_NEUMATICO_POR_AUTO int [pk, increment]
   NEUMATICO_NRO_SERIE nvarchar (255) [pk] // FK
   AUTO_NUMERO int [NULL] // FK
-  ACTIVO bit 
+  ACTIVO bit
 }
 
 Ref: NEUMATICO_POR_AUTO.NEUMATICO_NRO_SERIE > NEUMATICO.NEUMATICO_NRO_SERIE
@@ -165,25 +107,14 @@ Ref: NEUMATICO_POR_AUTO.AUTO_NUMERO > AUTO.AUTO_NUMERO
 Table FRENO_POR_AUTO {
   CODIGO_FRENO_POR_AUTO int [pk, increment]
   FRENO_NRO_SERIE nvarchar (255) [pk] // FK
-  AUTO_NUMERO int [NULL] // FK
-  ACTIVO bit 
+  AUTO_NUMERO int [NOT NULL] // FK
+  ACTIVO bit
 }
 
 Ref: FRENO_POR_AUTO.FRENO_NRO_SERIE > FRENO.FRENO_NRO_SERIE
 Ref: FRENO_POR_AUTO.AUTO_NUMERO > AUTO.AUTO_NUMERO
 
-Table INCIDENTE {
-  CODIGO_INCIDENTE int [pk, increment]
-  CODIGO_CARRERA int [NULL] // FK
-  CODIGO_SECTOR int [NULL] // FK
-  CODIGO_BANDERA int [NULL] // FK
-  INCIDENTE_TIEMPO decimal(18, 2) [NULL]
-}
-
-Ref: INCIDENTE.CODIGO_CARRERA > CARRERA.CODIGO_CARRERA
-Ref: INCIDENTE.CODIGO_SECTOR > SECTOR.CODIGO_SECTOR
-Ref: INCIDENTE.CODIGO_BANDERA > BANDERA.CODIGO_BANDERA
-
+// Incidentes
 Table BANDERA {
   CODIGO_BANDERA int [pk, increment]
   COMPORTAMIENTO nvarchar (255)
@@ -194,23 +125,37 @@ Table TIPO_INCIDENTE {
   DESCRIPCION nvarchar (255)
 }
 
+Table INCIDENTE {
+  CODIGO_INCIDENTE int [pk, increment]
+  CODIGO_CARRERA int [NOT NULL] // FK
+  CODIGO_SECTOR int [NOT NULL] // FK
+  CODIGO_BANDERA int [NULL] // FK
+  INCIDENTE_TIEMPO decimal(18, 2) [NULL]
+}
+
+Ref: INCIDENTE.CODIGO_CARRERA > CARRERA.CODIGO_CARRERA
+Ref: INCIDENTE.CODIGO_SECTOR > SECTOR.CODIGO_SECTOR
+Ref: INCIDENTE.CODIGO_BANDERA > BANDERA.CODIGO_BANDERA
+
+
+
 Table AUTO_POR_INCIDENTE as AUTO_INCI {
   CODIGO_AUTO_POR_INCIDENTE int [pk, increment]
-  CODIGO_INCIDENTE int [NULL] // FK
-  AUTO_NUMERO int [NULL] // FK
-  TIPO_INCIDENTE int [NULL] // FK
-  NRO_VUELTA decimal (18, 0) [NULL] 
+  CODIGO_INCIDENTE int [NOT NULL] // FK
+  AUTO_NUMERO int [NOT NULL] // FK
+  TIPO_INCIDENTE int [NOT NULL] // FK
+  NRO_VUELTA decimal (18, 0) [NOT NULL]
 }
 
 Ref: AUTO_INCI.CODIGO_INCIDENTE > INCIDENTE.CODIGO_INCIDENTE
 Ref: AUTO_INCI.AUTO_NUMERO > AUTO.AUTO_NUMERO
 Ref: AUTO_INCI.TIPO_INCIDENTE > TIPO_INCIDENTE.INCIDENTE_TIPO
 
-
+// Parada Box
 Table PARADA_BOX {
   CODIGO_PARADA_BOX int [pk, increment]
-  CODIGO_CARRERA int [NULL] // FK
-  AUTO_NUMERO int [NULL]
+  CODIGO_CARRERA int [NOT NULL] // FK
+  AUTO_NUMERO int [NOT NULL]
   PARADA_BOX_VUELTA decimal(18, 0) [NULL]
   PARADA_BOX_TIEMPO decimal(18, 2) [NULL]
 }
@@ -221,110 +166,75 @@ Ref: PARADA_BOX.AUTO_NUMERO > AUTO.AUTO_NUMERO
 Table NEUMATICO_POR_PARADA as NEU_PARADA{
   CODIGO_NEUMATICO_POR_PARADA int [pk, increment]
   CODIGO_NEUMATICO_POR_AUTO int [pk] // FK
-  CODIGO_PARADA_BOX int [NULL] // FK
-  TIPO NEU_CONDICION [NULL]
+  CODIGO_PARADA_BOX int [NOT NULL] // FK
+  TIPO NEU_CONDICION [NOT NULL]
 }
 
 Ref: NEU_PARADA.CODIGO_NEUMATICO_POR_AUTO > NEUMATICO_POR_AUTO.CODIGO_NEUMATICO_POR_AUTO
 Ref: NEU_PARADA.CODIGO_PARADA_BOX > PARADA_BOX.CODIGO_PARADA_BOX
 
-Enum NEU_CONDICION {
-  VIEJO
-  NUEVO
+//Telemetria
+Table TELEMETRIA_MOTOR as TELE_M {
+  CODIGO_TELE_MOTOR int [pk, increment]
+  TELE_MOTOR_NRO_SERIE nvarchar (255) [NOT NULL] //FK
+  TELE_MOTOR_POTENCIA decimal(18, 6) [NULL]
+  TELE_MOTOR_TEMP_ACEITE decimal(18, 6) [NULL]
+  TELE_MOTOR_TEMP_AGUA decimal (18, 6) [NULL]
+  TELE_MOTOR_RPM decimal(18, 6) [NULL]
+}
+Ref: TELE_M.TELE_MOTOR_NRO_SERIE > MOTOR.MOTOR_NRO_SERIE
+
+Table TELEMETRIA_CAJA as TELE_C {
+  CODIGO_TELE_CAJA int [pk, increment]
+  TELE_CAJA_NRO_SERIE nvarchar (255) [NOT NULL] //FK
+  TELE_CAJA_TEMP_ACEITE decimal(18, 2) [NULL]
+  TELE_CAJA_RPM decimal(18, 2) [NULL]
+  TELE_CAJA_DESGASTE decimal(18, 2) [NULL]
 }
 
-// EJEMPLO DE COMO SE USA DB DIAGRAMS.IO
+Ref: TELE_C.TELE_CAJA_NRO_SERIE > CAJA.CAJA_NRO_SERIE
 
-//// -- LEVEL 1
-//// -- Tables and References
+Table TELEMETRIA_NEUMATICO as TELE_N {
+  CODIGO_TELE_NEUMATICO int [pk, increment]
+  TELE_NEUMATICO_NRO_SERIE nvarchar (255) [NOT NULL] //FK
+  CODIGO_TELE int [NOT NULL] //FK
+  TELE_NEUMATICO_PRESION decimal(18, 6) [NULL]
+  TELE_NEUMATICO_PROFUNDIDAD decimal(18, 6) [NULL]
+  TELE_NEUMATICO_TEMPERATURA decimal (18, 6) [NULL]
+}
 
-// Creating tables
-//Table users as U {
-//  id int [pk, increment] // auto-increment
-//  full_name varchar
-//  created_at timestamp
-//  country_code int
-//}
+Ref: TELE_N.TELE_NEUMATICO_NRO_SERIE > NEUMATICO.NEUMATICO_NRO_SERIE
+Ref: TELE_N.CODIGO_TELE > TELE.CODIGO_TELE
 
-//Table countries {
-//  code int [pk]
-//  name varchar
-//  continent_name varchar
-// }
+Table TELEMETRIA_FRENO as TELE_F {
+  CODIGO_TELE_FRENO int [pk, increment]
+  TELE_FRENO_NRO_SERIE nvarchar (255) [NOT NULL] //FK
+  CODIGO_TELE int [NOT NULL] //FK
+  TELE_FRENO_TEMPERATURA decimal (18, 2) [NULL]
+  TELE_FRENO_GROSOR_PASTILLA decimal (18, 2) [NULL]
+}
+Ref: TELE_F.TELE_FRENO_NRO_SERIE > FRENO.FRENO_NRO_SERIE
+Ref: TELE_F.CODIGO_TELE > TELE.CODIGO_TELE
 
-// Creating references
-// You can also define relaionship separately
-// > many-to-one; < one-to-many; - one-to-one
-//Ref: U.country_code > countries.code  
-//Ref: merchants.country_code > countries.code
 
-//----------------------------------------------//
+Table TELEMETRIA as TELE {
+  CODIGO_TELE int [pk, increment]
+  AUTO_NUMERO decimal (18, 0) [NOT NULL] //FK
+  CODIGO_CARRERA int [NOT NULL] //FK
+  CODIGO_SECTOR int [NOT NULL] //FK
+  TELE_AUTO_NUMERO_VUELTA decimal (18, 0) [NULL]
+  TELE_AUTO_DISTANCIA_CARRERA decimal (18, 6) [NULL]
+  TELE_AUTO_DISTANCIA_VUELTA decimal (18, 2) [NULL]
+  TELE_AUTO_TIEMPO_VUELTA decimal (18, 10) [NULL]
+  TELE_AUTO_POSICION decimal (18, 0) [NULL]
+  TELE_AUTO_VELOCIDAD decimal (18, 2) [NULL]
+  TELE_AUTO_COMBUSTIBLE decimal (18, 2) [NULL]
+  CODIGO_TELE_MOTOR int [NOT NULL] // FK
+  CODIGO_TELE_CAJA int [NOT NULL] // FK
+}
 
-//// -- LEVEL 2
-//// -- Adding column settings
-
-//Table order_items {
-//  order_id int [ref: > orders.id] // inline relationship (many-to-one)
-//  product_id int
-//  quantity int [default: 1] // default value
-//}
-
-//Ref: order_items.product_id > products.id
-
-//Table orders {
-//  id int [pk] // primary key
-//  user_id int [not null, unique]
-//  status varchar
-//  created_at varchar [note: 'When order created'] // add column note
-//}
-
-//----------------------------------------------//
-
-//// -- Level 3 
-//// -- Enum, Indexes
-
-// Enum for 'products' table below
-//Enum products_status {
-//  out_of_stock
-//  in_stock
-//  running_low [note: 'less than 20'] // add column note
-//}
-
-// Indexes: You can define a single or multi-column index 
-//Table products {
-//  id int [pk]
-//  name varchar
-//  merchant_id int [not null]
-//  price int
-//  status products_status
-//  created_at datetime [default: `now()`]
-  
-//  Indexes {
-//    (merchant_id, status) [name:'product_status']
-//    id [unique]
-//  }
-//}
-
-//Table merchants {
-//  id int
-//  country_code int
-//  merchant_name varchar
-  
-//  "created at" varchar
-//  admin_id int [ref: > U.id]
-//  Indexes {
-//    (id, country_code) [pk]
- // }
-//}
-
-//Table merchant_periods {
-//  id int [pk]
-//  merchant_id int
-//  country_code int
-//  start_date datetime
-//  end_date datetime
-//}
-
-//Ref: products.merchant_id > merchants.id // many-to-one
-//composite foreign key
-//Ref: merchant_periods.(merchant_id, country_code) > merchants.(id, country_code)
+Ref: TELE.AUTO_NUMERO > AUTO.AUTO_NUMERO
+Ref: TELE.CODIGO_CARRERA > C.CODIGO_CARRERA
+Ref: TELE.CODIGO_SECTOR > S.CODIGO_SECTOR
+Ref: TELE.CODIGO_TELE_MOTOR > TELE_M.CODIGO_TELE_MOTOR
+Ref: TELE.CODIGO_TELE_CAJA > TELE_C.CODIGO_TELE_CAJA
