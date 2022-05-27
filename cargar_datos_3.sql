@@ -109,11 +109,11 @@ ORDER BY 2
 
 --seteamos los activos en 1
 
-DECLARE @auto_num int, @auto_modelo nvarchar(255), @cod int
+DECLARE @auto_num_fre int, @auto_modelo_fre nvarchar(255), @cod_fre int
 DECLARE CURSOR_AUTOS CURSOR FOR 
 	SELECT AUTO_MODELO, AUTO_NUMERO, CODIGO_AUTO FROM COSMICOS.AUTO
     OPEN CURSOR_AUTOS
-    FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo, @auto_num, @cod
+    FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo_fre, @auto_num_fre, @cod_fre
     WHILE @@FETCH_STATUS = 0
     BEGIN
 		DECLARE @fre1 nvarchar(255), @fre2 nvarchar(255), @fre3 nvarchar(255), @fre4 nvarchar(255)
@@ -129,18 +129,16 @@ DECLARE CURSOR_AUTOS CURSOR FOR
                         AND  TELE_FRENO3_NRO_SERIE IS NOT NULL
                         AND  TELE_FRENO4_NRO_SERIE IS NOT NULL
 
-                      -- este "print" se ve en la tab de Messages de SQL Server
-                      PRINT 'PARA EL AUTO ' + CAST(@cod as varchar) + ' LOS NUEMATICOS ACTIVOS SON ' + 
-                        CAST(@fre1 as varchar) + ', ' +  CAST(@fre2 as varchar) + ', ' + CAST(@fre3 as varchar) + ', ' + CAST(@fre4 as varchar)
-
+                  
 		UPDATE COSMICOS.FRENO_POR_AUTO
                SET ACTIVO = 1
-               WHERE FRENO_NRO_SERIE in (@fre1, @fre2, @fre3, @fre4) AND CODIGO_AUTO = @cod
+               WHERE FRENO_NRO_SERIE in (@fre1, @fre2, @fre3, @fre4) AND CODIGO_AUTO = @cod_fre
 
-        FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo, @auto_num, @cod
+        FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo_fre, @auto_num_fre, @cod_fre
 	END
     CLOSE CURSOR_AUTOS
     DEALLOCATE CURSOR_AUTOS
+    
     
     
 --BANDERA Y TIPO DE INCIDENTE EN EL SCRIPT 2
