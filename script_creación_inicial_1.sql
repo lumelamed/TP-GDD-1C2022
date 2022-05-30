@@ -196,7 +196,7 @@ CREATE TABLE [COSMICOS].[TELEMETRIA_FRENO] (
 GO
 
 CREATE TABLE [COSMICOS].[TELEMETRIA] (
-  [CODIGO_TELE] int PRIMARY KEY IDENTITY(1, 1), --agregado por nosotros -- no sabemos es TELE-CODIGO-AUTO preguntar
+  [CODIGO_TELE] int PRIMARY KEY, --importado de tabla maestra
   [CODIGO_AUTO] int NOT NULL,
   [CODIGO_CARRERA] int NOT NULL,
   [CODIGO_SECTOR] int NOT NULL,
