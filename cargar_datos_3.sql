@@ -156,7 +156,7 @@ DECLARE CURSOR_AUTOS CURSOR FOR
                         @fre3 = TELE_FRENO3_NRO_SERIE, 
                         @fre4 = TELE_FRENO4_NRO_SERIE 
                  FROM [gd_esquema].[Maestra] m
-                 WHERE AUTO_MODELO = @auto_modelo AND AUTO_NUMERO = @auto_num 
+                 WHERE AUTO_MODELO = @auto_modelo_fre AND AUTO_NUMERO = @auto_num_fre 
                         AND  TELE_FRENO1_NRO_SERIE IS NOT NULL
                         AND  TELE_FRENO2_NRO_SERIE IS NOT NULL
                         AND  TELE_FRENO3_NRO_SERIE IS NOT NULL
