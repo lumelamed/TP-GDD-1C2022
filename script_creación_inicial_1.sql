@@ -27,7 +27,7 @@ GO
 
 CREATE TABLE [COSMICOS].[SECTOR] (
   [CODIGO_SECTOR] int PRIMARY KEY, --importado de tabla maestra
-  [SECTRO_DISTANCIA] decimal(18,2),
+  [SECTOR_DISTANCIA] decimal(18,2),
   [SECTOR_TIPO] int,
   [CIRCUITO_CODIGO] int NOT NULL
 )
