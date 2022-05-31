@@ -5,6 +5,7 @@ GO
 CREATE TABLE [COSMICOS].[CIRCUITO] (
   [CIRCUITO_CODIGO] int PRIMARY KEY, --importado de tabla maestra
   [CIRCUITO_NOMBRE] nvarchar(255),
+  [CIRCUITO_PAIS] nvarchar(255)
 )
 GO
 
