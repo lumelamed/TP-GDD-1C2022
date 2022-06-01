@@ -103,43 +103,45 @@ WHERE TELE_FRENO4_NRO_SERIE IS NOT NULL
 ORDER BY 2
 
 
--- Seteamos en 1 los neumaticos activos   --> algo no cierra porque solo 60 de los 120 autos tienen neumaticos, el resto ni tiene
-DECLARE @auto_num int, @auto_modelo nvarchar(255), @cod int
+-- Seteamos en 1 los neumaticos activos   --> solo 38 de los 120 autos por carrera tienen sus 4 ruedas activas
+DECLARE @cod_auto_carrera int
 DECLARE CURSOR_AUTOS CURSOR FOR 
-SELECT AUTO_MODELO, AUTO_NUMERO, CODIGO_AUTO FROM COSMICOS.AUTO
+SELECT CODIGO_AUTO_POR_CARRERA FROM COSMICOS.AUTO_POR_CARRERA
 OPEN CURSOR_AUTOS
-FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo, @auto_num, @cod
+FETCH NEXT FROM CURSOR_AUTOS INTO  @cod_auto_carrera
     WHILE @@FETCH_STATUS = 0
     BEGIN
         DECLARE @neu1 nvarchar(255), @neu2 nvarchar(255), @neu3 nvarchar(255), @neu4 nvarchar(255)
 
-        SELECT DISTINCT @neu1 = NEUMATICO1_NRO_SERIE_NUEVO, 
-                @neu2 = NEUMATICO2_NRO_SERIE_NUEVO, 
-                @neu3 = NEUMATICO3_NRO_SERIE_NUEVO, 
-                @neu4 = NEUMATICO4_NRO_SERIE_NUEVO 
+        SELECT DISTINCT @neu1 = TELE_NEUMATICO1_NRO_SERIE, 
+                @neu2 = TELE_NEUMATICO2_NRO_SERIE, 
+                @neu3 = TELE_NEUMATICO3_NRO_SERIE, 
+                @neu4 = TELE_NEUMATICO4_NRO_SERIE
                 FROM [gd_esquema].[Maestra] m
-                WHERE AUTO_MODELO = @auto_modelo AND AUTO_NUMERO = @auto_num 
-                AND  NEUMATICO1_NRO_SERIE_NUEVO IS NOT NULL
-                AND  NEUMATICO2_NRO_SERIE_NUEVO IS NOT NULL
-                AND  NEUMATICO3_NRO_SERIE_NUEVO IS NOT NULL
-                AND  NEUMATICO4_NRO_SERIE_NUEVO IS NOT NULL
+				JOIN COSMICOS.AUTO A ON M.AUTO_MODELO = A.AUTO_MODELO AND M.AUTO_NUMERO = A.AUTO_NUMERO
+				JOIN COSMICOS.AUTO_POR_CARRERA AC ON A.CODIGO_AUTO = AC.CODIGO_AUTO AND M.CODIGO_CARRERA = AC.CODIGO_CARRERA
+                WHERE AC.CODIGO_AUTO_POR_CARRERA = @cod_auto_carrera
+				AND  TELE_NEUMATICO1_NRO_SERIE IS NOT NULL
+				AND  TELE_NEUMATICO2_NRO_SERIE IS NOT NULL
+				AND  TELE_NEUMATICO3_NRO_SERIE IS NOT NULL
+				AND  TELE_NEUMATICO4_NRO_SERIE IS NOT NULL
                   
         UPDATE COSMICOS.NEUMATICO_POR_AUTO
         SET ACTIVO = 1
-        WHERE NEUMATICO_NRO_SERIE in (@neu1, @neu2, @neu3, @neu4) AND CODIGO_AUTO = @cod
+        WHERE NEUMATICO_NRO_SERIE in (@neu1, @neu2, @neu3, @neu4) AND CODIGO_AUTO_POR_CARRERA = @cod_auto_carrera
 
-        FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo, @auto_num, @cod
+        FETCH NEXT FROM CURSOR_AUTOS INTO @cod_auto_carrera
     END
 CLOSE CURSOR_AUTOS
 DEALLOCATE CURSOR_AUTOS
 
 
--- Seteamos en 1 los frenos activos 
-DECLARE @auto_num_fre int, @auto_modelo_fre nvarchar(255), @cod_fre int
-DECLARE CURSOR_AUTOS CURSOR FOR 
-	SELECT AUTO_MODELO, AUTO_NUMERO, CODIGO_AUTO FROM COSMICOS.AUTO
-    OPEN CURSOR_AUTOS
-    FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo_fre, @auto_num_fre, @cod_fre
+-- Seteamos en 1 los frenos activos 	--> hay 120 frenos x auto activos :)
+SET @cod_auto_carrera = 0
+DECLARE CURSOR_AUTOS_FRENO CURSOR FOR 
+	SELECT CODIGO_AUTO_POR_CARRERA FROM COSMICOS.AUTO_POR_CARRERA
+    OPEN CURSOR_AUTOS_FRENO
+    FETCH NEXT FROM CURSOR_AUTOS_FRENO INTO @cod_auto_carrera
     WHILE @@FETCH_STATUS = 0
     BEGIN
 		DECLARE @fre1 nvarchar(255), @fre2 nvarchar(255), @fre3 nvarchar(255), @fre4 nvarchar(255)
@@ -149,7 +151,9 @@ DECLARE CURSOR_AUTOS CURSOR FOR
                         @fre3 = TELE_FRENO3_NRO_SERIE, 
                         @fre4 = TELE_FRENO4_NRO_SERIE 
                  FROM [gd_esquema].[Maestra] m
-                 WHERE AUTO_MODELO = @auto_modelo_fre AND AUTO_NUMERO = @auto_num_fre 
+				 JOIN COSMICOS.AUTO A ON M.AUTO_MODELO = A.AUTO_MODELO AND M.AUTO_NUMERO = A.AUTO_NUMERO
+				 JOIN COSMICOS.AUTO_POR_CARRERA AC ON A.CODIGO_AUTO = AC.CODIGO_AUTO AND M.CODIGO_CARRERA = AC.CODIGO_CARRERA
+                 WHERE AC.CODIGO_AUTO_POR_CARRERA = @cod_auto_carrera
                         AND  TELE_FRENO1_NRO_SERIE IS NOT NULL
                         AND  TELE_FRENO2_NRO_SERIE IS NOT NULL
                         AND  TELE_FRENO3_NRO_SERIE IS NOT NULL
@@ -158,12 +162,12 @@ DECLARE CURSOR_AUTOS CURSOR FOR
                   
 		UPDATE COSMICOS.FRENO_POR_AUTO
                SET ACTIVO = 1
-               WHERE FRENO_NRO_SERIE in (@fre1, @fre2, @fre3, @fre4) AND CODIGO_AUTO = @cod_fre
+               WHERE FRENO_NRO_SERIE in (@fre1, @fre2, @fre3, @fre4) AND CODIGO_AUTO_POR_CARRERA = @cod_auto_carrera
 
-        FETCH NEXT FROM CURSOR_AUTOS INTO @auto_modelo_fre, @auto_num_fre, @cod_fre
+        FETCH NEXT FROM CURSOR_AUTOS_FRENO INTO @cod_auto_carrera
 	END
-CLOSE CURSOR_AUTOS
-DEALLOCATE CURSOR_AUTOS
+CLOSE CURSOR_AUTOS_FRENO
+DEALLOCATE CURSOR_AUTOS_FRENO
 
 --AUTO_POR_INCIDENTE
 INSERT INTO COSMICOS.AUTO_POR_INCIDENTE (CODIGO_INCIDENTE,CODIGO_AUTO_POR_CARRERA, TIPO_INCIDENTE, NRO_VUELTA, INCIDENTE_TIEMPO)
