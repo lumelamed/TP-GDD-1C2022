@@ -106,6 +106,8 @@ FROM gd_esquema.Maestra
 WHERE NEUMATICO4_TIPO_VIEJO IS NOT NULL
 
 -- NEUMATICO
+-- NOTA: debemos obtenerlos de los campos de "NEUMATICOx_NRO_SERIE_NUEVO/VIEJO" y no de las telemetrias para asegurarnos que la relacion con
+-- el tipo de neumatico sea la correcta. Un compañero de otro curso envio un mail al respecto.
 INSERT INTO COSMICOS.NEUMATICO (NEUMATICO_NRO_SERIE, NEUMATICO_POSICION, NEUMATICO_TIPO)
 SELECT DISTINCT NEUMATICO1_NRO_SERIE_NUEVO, NEUMATICO1_POSICION_NUEVO, tn.NEUMATICO_TIPO
 FROM gd_esquema.Maestra m
