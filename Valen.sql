@@ -1,6 +1,6 @@
 --Mejor tiempo de vuelta de cada escudería por circuito por año.
 --El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito
-
+--mal x me falta el cirucioto
 
 create view mejor_tiempo_vuelta_por_año_por_escuderia as
 select TELE_AUTO_TIEMPO_VUELTA , year(C.CARRERA_FECHA) as AÑO_CARRERA , A.CODIGO_AUTO, E.CODIGO_ESCUDERIA
