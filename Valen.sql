@@ -24,7 +24,8 @@ where TELE_AUTO_TIEMPO_VUELTA <> 0  and  TELE_AUTO_TIEMPO_VUELTA = (
 
 --Los 3 circuitos donde se consume mayor cantidad en tiempo de paradas en boxes
 create view mayorTiempoParadas as
-select top 3 c.CIRCUITO_CODIGO, p.PARADA_BOX_TIEMPO
+select top 3 c.CIRCUITO_CODIGO, sum(p.PARADA_BOX_TIEMPO)
 from cosmicos.PARADA_BOX p 
 join  cosmicos.CARRERA c on c.CODIGO_CARRERA =p.CODIGO_CARRERA
-order by p.PARADA_BOX_TIEMPO desc
+group by c.CIRCUITO_CODIGO  
+order by sum(p.PARADA_BOX_TIEMPO) desc
