@@ -1,4 +1,5 @@
 --CREACION DE TABLAS
+
 CREATE TABLE [COSMICOS].[DIMENSION_CIRCUITO] (
   [CIRCUITO_CODIGO] int PRIMARY KEY, --importado de tabla maestra
   [CIRCUITO_NOMBRE] nvarchar(255),
@@ -37,8 +38,14 @@ GO
 
 --INSERT EN LAS DIMENSIONES
 --dimension_escuderia
+
+
 --dimension_auto
+
+
 --dimension_circuito
+
+
 --dimension_sector
 
 
