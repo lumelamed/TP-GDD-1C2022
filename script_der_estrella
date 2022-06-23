@@ -33,14 +33,6 @@ CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
 )
 GO
 
-CREATE TABLE [COSMICOS].[DIMENSION_INCIDENTE] (
-  [CODIGO_INCIDENTE] int PRIMARY KEY IDENTITY(1, 1), --agregado por nosotros
-  --[CODIGO_CARRERA] int NOT NULL,
-  --[CODIGO_SECTOR] int NOT NULL,
- -- [CODIGO_BANDERA] int
-)
-GO
-
 CREATE TABLE [COSMICOS].[DIMENSION_TELEMETRIA] (
   [CODIGO_TELE] int PRIMARY KEY, --importado de tabla maestra
  -- [CODIGO_AUTO_POR_CARRERA] int NOT NULL,
@@ -61,7 +53,6 @@ GO
 
 --INSERT EN LAS DIMENSIONES
 --dimension_escuderia
---dimension_incidente
 --dimension_auto
 --dimension_circuito
 --dimension_telemetria
