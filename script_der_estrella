@@ -1,15 +1,4 @@
 --CREACION DE TABLAS
-
-
---INSERT EN LAS DIMENSIONES
---dimension_carrera
---dimension_parada_box
---dimension_escuderia
---dimension_incidente
---dimension_auto
---dimension_circuito
---dimension_telemetria
---dimension_sector
 CREATE TABLE [COSMICOS].[DIMENSION_CIRCUITO] (
   [CIRCUITO_CODIGO] int PRIMARY KEY, --importado de tabla maestra
   [CIRCUITO_NOMBRE] nvarchar(255),
@@ -68,6 +57,16 @@ CREATE TABLE [COSMICOS].[DIMENSION_TELEMETRIA] (
   --[CODIGO_TELE_CAJA] int NOT NULL
 )
 GO
+
+
+--INSERT EN LAS DIMENSIONES
+--dimension_carrera
+--dimension_escuderia
+--dimension_incidente
+--dimension_auto
+--dimension_circuito
+--dimension_telemetria
+--dimension_sector
 
 
 
