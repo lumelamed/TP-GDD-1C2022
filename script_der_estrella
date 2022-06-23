@@ -34,6 +34,38 @@ CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
 )
 GO
 
+CREATE TABLE [COSMICOS].[HechosPrincipal](
+	[hecho_id] int PRIMARY KEY NOT NULL,
+	 [CODIGO_AUTO] int ,
+	 [CODIGO_ESCUDERIA] int  ,
+	 [CIRCUITO_CODIGO] int  ,
+	 [CODIGO_SECTOR] int  ,
+	 [Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio] decimal(18,10) null,
+	 [Q3_Prom_Consumo_Combustible_XCircuito] decimal(18,2) null,
+	 [Q4_Max_Velocidad_XAuto_XSector_XCircuito] decimal(18,2) null,
+	 [Q5_Tiempo_Prom_XEscuderia_Xanio_XSector] decimal(18,10) null,
+	 [Q6_Cant_Paradas_XCirc_Xanio_XEscuderia] int null,
+	 [Q7_Tiempo_XParada_XCircuito] decimal(18,10) null,
+	 [Q8_Cant_Incidente_XCircuito_XAnio] int null,
+	 [Q9_Prom_Incidentes_XEsc_Xanio_Xsector] decimal(18,2) null,
+	 [Anio] int,
+	 [Cuatrimestre] int
+
+)
+-- faltan las FK
+CREATE TABLE [COSMICOS].[HechosNeumaticos](
+	[ID_HECHO_NEU]
+		 [CODIGO_AUTO] int ,
+		 [CIRCUITO_CODIGO] int,
+
+	[NUMERO_VUELTA] int null  ,
+	[AUTO_COMBUSTIBLE] decimal(18,6) null ,
+	[DESGASTE_MOTOR] decimal(18,6) null ,
+	[DESGASTE_CAJA] decimal(18,6) null,
+	[DESGASTE_NEUMATICO_1]
+
+)
+
 
 
 --INSERT EN LAS DIMENSIONES-----------------------------------------------------------------------------------------------------------------------------------------------
