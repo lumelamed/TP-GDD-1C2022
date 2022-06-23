@@ -10,6 +10,64 @@
 --dimension_circuito
 --dimension_telemetria
 --dimension_sector
+CREATE TABLE [COSMICOS].[DIMENSION_CIRCUITO] (
+  [CIRCUITO_CODIGO] int PRIMARY KEY, --importado de tabla maestra
+  [CIRCUITO_NOMBRE] nvarchar(255),
+ )
+GO
+
+CREATE TABLE [COSMICOS].[DIENSION_SECTOR] (
+  [CODIGO_SECTOR] int PRIMARY KEY, --importado de tabla maestra
+  [SECTOR_DISTANCIA] decimal(18,2),
+  [SECTOR_TIPO] nvarchar(255),
+  --SECTORTIPO INT
+  --[CIRCUITO_CODIGO] int NOT NULL
+)
+GO
+
+CREATE TABLE [COSMICOS].[DIMENSION_ESCUDERIA] (
+  [CODIGO_ESCUDERIA] int PRIMARY KEY IDENTITY(1,1), --agregado por nosotros
+  [ESCUDERIA_NOMBRE] varchar(50),
+  --[ESCUDERIA_NACIONALIDAD] varchar(50)
+)
+GO
+-- GDD TE ODIO
+CREATE TABLE [COSMICOS].[AUTO] (
+  [CODIGO_AUTO] int PRIMARY KEY IDENTITY(1, 1), --agregado por nosotros
+  [AUTO_NUMERO] int NOT NULL,
+  --[AUTO_MODELO] nvarchar(255),
+  [CODIGO_PILOTO] int NOT NULL,
+  [CODIGO_ESCUDERIA] int NOT NULL,
+  -- DE AUTO X CARRERA
+  [MOTOR_NRO_SERIE] nvarchar(255) NULL,
+  [CAJA_NRO_SERIE] nvarchar(255) NULL,
+)
+GO
+
+CREATE TABLE [COSMICOS].[INCIDENTE] (
+  [CODIGO_INCIDENTE] int PRIMARY KEY IDENTITY(1, 1), --agregado por nosotros
+  --[CODIGO_CARRERA] int NOT NULL,
+  --[CODIGO_SECTOR] int NOT NULL,
+ -- [CODIGO_BANDERA] int
+)
+GO
+
+CREATE TABLE [COSMICOS].[TELEMETRIA] (
+  [CODIGO_TELE] int PRIMARY KEY, --importado de tabla maestra
+ -- [CODIGO_AUTO_POR_CARRERA] int NOT NULL,
+  --[CODIGO_CARRERA] int NOT NULL,
+  --[CODIGO_SECTOR] int NOT NULL,
+  --[TELE_AUTO_DISTANCIA_CARRERA] decimal(18, 6),
+  --[TELE_AUTO_DISTANCIA_VUELTA] decimal(18, 2),
+  [TELE_AUTO_TIEMPO_VUELTA] decimal(18, 10),
+  --[TELE_AUTO_POSICION] decimal(18, 0),
+  [TELE_AUTO_VELOCIDAD] decimal(18, 2),
+  [TELE_AUTO_NUMERO_VUELTA] decimal(18, 0),
+  [TELE_AUTO_COMBUSTIBLE] decimal(18, 2),
+  --[CODIGO_TELE_MOTOR] int NOT NULL,
+  --[CODIGO_TELE_CAJA] int NOT NULL
+)
+GO
 
 
 
