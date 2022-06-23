@@ -60,7 +60,6 @@ GO
 
 
 --INSERT EN LAS DIMENSIONES
---dimension_carrera
 --dimension_escuderia
 --dimension_incidente
 --dimension_auto
