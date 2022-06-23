@@ -1,3 +1,8 @@
+--CREACION DE TABLAS
+
+
+
+--INSERT EN LAS TABLAS
 --Q1
 --Desgaste promedio de cada componente de cada auto por vuelta por circuito. 
 --Tener en cuenta que, para el cálculo del desgaste de los neumáticos, se  toma la diferencia de mm del mismo entre la medición inicial y final de cada vuelta.
