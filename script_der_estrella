@@ -1,4 +1,4 @@
---CREACION DE TABLAS
+--CREACION DE TABLAS-----------------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE [COSMICOS].[DIMENSION_CIRCUITO] (
   [CIRCUITO_CODIGO] int PRIMARY KEY, --importado de tabla maestra
@@ -36,7 +36,7 @@ GO
 
 
 
---INSERT EN LAS DIMENSIONES
+--INSERT EN LAS DIMENSIONES-----------------------------------------------------------------------------------------------------------------------------------------------
 --dimension_escuderia
 
 
@@ -51,7 +51,7 @@ GO
 
 
 
---INSERT EN LOS HECHOS
+--INSERT EN LOS HECHOS-----------------------------------------------------------------------------------------------------------------------------------------------
 --Q1
 --Desgaste promedio de cada componente de cada auto por vuelta por circuito. 
 --Tener en cuenta que, para el cálculo del desgaste de los neumáticos, se  toma la diferencia de mm del mismo entre la medición inicial y final de cada vuelta.
