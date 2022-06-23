@@ -35,7 +35,7 @@ CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
 GO
 
 CREATE TABLE [COSMICOS].[HechosPrincipal](
-	[hecho_id] int PRIMARY KEY NOT NULL,
+	[hecho_id] int PRIMARY KEY IDENTITY(1, 1),
 	 [CODIGO_AUTO] int ,
 	 [CODIGO_ESCUDERIA] int  ,
 	 [CIRCUITO_CODIGO] int  ,
@@ -54,16 +54,21 @@ CREATE TABLE [COSMICOS].[HechosPrincipal](
 )
 -- faltan las FK
 CREATE TABLE [COSMICOS].[HechosNeumaticos](
-	[ID_HECHO_NEU]
-		 [CODIGO_AUTO] int ,
-		 [CIRCUITO_CODIGO] int,
-
-	[NUMERO_VUELTA] int null  ,
-	[AUTO_COMBUSTIBLE] decimal(18,6) null ,
-	[DESGASTE_MOTOR] decimal(18,6) null ,
+	[ID_HECHO_NEU] INT PRIMARY KEY IDENTITY(1, 1),
+	[CODIGO_AUTO] int ,
+	[CIRCUITO_CODIGO] int,
+	[NUMERO_VUELTA] int null,
+	[AUTO_COMBUSTIBLE] decimal(18,6) null,
+	[DESGASTE_MOTOR] decimal(18,6) null,
 	[DESGASTE_CAJA] decimal(18,6) null,
-	[DESGASTE_NEUMATICO_1]
-
+	[DESGASTE_NEUMATICO_1] decimal(18,6) null,
+	[DESGASTE_NEUMATICO_2] decimal(18,6) null,
+	[DESGASTE_NEUMATICO_3] decimal(18,6) null,
+	[DESGASTE_NEUMATICO_4] decimal(18,6) null,
+	[DESGASTE_FRENO_1] decimal(18,2) null,
+	[DESGASTE_FRENO_2] decimal(18,2) null,
+	[DESGASTE_FRENO_3] decimal(18,2) null,
+	[DESGASTE_FRENO_4] decimal(18,2) null
 )
 
 
