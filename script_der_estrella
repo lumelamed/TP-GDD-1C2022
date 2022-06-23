@@ -33,29 +33,12 @@ CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
 )
 GO
 
-CREATE TABLE [COSMICOS].[DIMENSION_TELEMETRIA] (
-  [CODIGO_TELE] int PRIMARY KEY, --importado de tabla maestra
- -- [CODIGO_AUTO_POR_CARRERA] int NOT NULL,
-  --[CODIGO_CARRERA] int NOT NULL,
-  --[CODIGO_SECTOR] int NOT NULL,
-  --[TELE_AUTO_DISTANCIA_CARRERA] decimal(18, 6),
-  --[TELE_AUTO_DISTANCIA_VUELTA] decimal(18, 2),
-  [TELE_AUTO_TIEMPO_VUELTA] decimal(18, 10),
-  --[TELE_AUTO_POSICION] decimal(18, 0),
-  [TELE_AUTO_VELOCIDAD] decimal(18, 2),
-  [TELE_AUTO_NUMERO_VUELTA] decimal(18, 0),
-  [TELE_AUTO_COMBUSTIBLE] decimal(18, 2),
-  --[CODIGO_TELE_MOTOR] int NOT NULL,
-  --[CODIGO_TELE_CAJA] int NOT NULL
-)
-GO
 
 
 --INSERT EN LAS DIMENSIONES
 --dimension_escuderia
 --dimension_auto
 --dimension_circuito
---dimension_telemetria
 --dimension_sector
 
 
