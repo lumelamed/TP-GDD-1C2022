@@ -8,6 +8,11 @@
 --Mejor tiempo de vuelta de cada escudería por circuito por año. 
 --El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito. 
 
+select top 3  Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO 
+from COSMICOS.HechosPrincipal 
+where Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio is not null
+order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio 
+
 
 --Q3
 --Los 3 de circuitos con mayor consumo de combustible promedio. 
@@ -24,6 +29,11 @@
 
 --Q7
 --Los 3 circuitos donde se consume mayor cantidad en tiempo de paradas en boxes. 
+
+select top 3 CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito
+from COSMICOS.HechosPrincipal
+where Q7_Tiempo_XParada_XCircuito is not null 
+order by Q7_Tiempo_XParada_XCircuito desc
 
 --Q8
 --Los 3 circuitos más peligrosos del año, en función mayor cantidad de incidentes. 
