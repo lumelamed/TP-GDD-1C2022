@@ -27,7 +27,11 @@ GO
 
 --Q5
 --Tiempo promedio que tardó cada escudería en las paradas por cuatrimestre. 
-
+CREATE VIEW TiempoPromioParadaCuatri as
+		select Q5_Tiempo_Prom_XEscuderia_Xanio_XSector,Cuatrimestre,Anio from Cosmicos.HechosPrincipal HP
+		join COSMICOS.DIMENSION_ESCUDERIA ES on ES.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA  
+	go
+  
 -Q6
 --Cantidad de paradas por circuito por escudería por año. 
 
