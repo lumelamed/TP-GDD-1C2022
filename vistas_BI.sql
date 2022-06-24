@@ -34,6 +34,11 @@ CREATE VIEW TiempoPromioParadaCuatri as
   
 -Q6
 --Cantidad de paradas por circuito por escudería por año. 
+CREATE VIEW COSMICOS.cantParadasCircEscAnio as
+		select DE.ESCUDERIA_NOMBRE,DI.CIRCUITO_NOMBRE, HP.Q6_Cant_Paradas_XCirc_Xanio_XEscuderia from Cosmicos.HechosPrincipal HP
+		join COSMICOS.DIMENSION_ESCUDERIA DE ON DE.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA 
+		JOIN COSMICOS.DIMENSION_CIRCUITO DI ON DI.CIRCUITO_CODIGO = HP.CIRCUITO_CODIGO
+	GO
 
 --Q7
 --Los 3 circuitos donde se consume mayor cantidad en tiempo de paradas en boxes. 
