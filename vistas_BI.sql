@@ -8,7 +8,8 @@
 --Mejor tiempo de vuelta de cada escudería por circuito por año. 
 --El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito. 
 
-select top 3  Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO 
+create view MejorTiempoVuelta_XEscuderia_XCircuito_Xanio as
+select top 3  Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio as tiempo,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO 
 from COSMICOS.HechosPrincipal 
 where Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio is not null
 order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio 
@@ -43,7 +44,9 @@ CREATE VIEW COSMICOS.cantParadasCircEscAnio as
 --Q7
 --Los 3 circuitos donde se consume mayor cantidad en tiempo de paradas en boxes. 
 
-select top 3 CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito
+
+create view Tiempo_XParada_XCircuito as
+select top 3 CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito as tiempo_parada
 from COSMICOS.HechosPrincipal
 where Q7_Tiempo_XParada_XCircuito is not null 
 order by Q7_Tiempo_XParada_XCircuito desc
