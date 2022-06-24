@@ -17,14 +17,14 @@ GO
 
 
 CREATE TABLE [COSMICOS].[DIMENSION_ESCUDERIA] (
-  [CODIGO_ESCUDERIA] int PRIMARY KEY IDENTITY(1,1), --agregado por nosotros
+  [CODIGO_ESCUDERIA] int PRIMARY KEY , --agregado por nosotros
   [ESCUDERIA_NOMBRE] varchar(50),
   --[ESCUDERIA_NACIONALIDAD] varchar(50)
 )
 GO
 -- GDD TE ODIO --ME TOO
 CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
-  [CODIGO_AUTO] int PRIMARY KEY IDENTITY(1, 1), --agregado por nosotros
+  [CODIGO_AUTO] int PRIMARY KEY ), --agregado por nosotros
   [AUTO_NUMERO] int NOT NULL,
   --[AUTO_MODELO] nvarchar(255),
   [CODIGO_PILOTO] int NOT NULL,
@@ -53,6 +53,7 @@ CREATE TABLE [COSMICOS].[HechosPrincipal](
 	 [Cuatrimestre] int
 
 )
+go
 -- faltan las FK
 CREATE TABLE [COSMICOS].[HechosNeumaticos](
 	[ID_HECHO_NEU] INT PRIMARY KEY IDENTITY(1, 1) ,
@@ -164,11 +165,17 @@ join  cosmicos.CARRERA c on c.CODIGO_CARRERA =p.CODIGO_CARRERA
 group by c.CIRCUITO_CODIGO  
 order by sum(p.PARADA_BOX_TIEMPO) desc
 
+
+
+
 --Q8
 --Los 3 circuitos más peligrosos del año, en función mayor cantidad de incidentes. 
 ---------------------------------------------------------------------------------------------------
 --DELETE FROM [COSMICOS].[HechosPrincipal] WHERE Anio IS NOT NULL and CODIGO_SECTOR is not null
 --go
+
+DELETE FROM [COSMICOS].HechosPrincipal
+GO 
 
 DROP PROCEDURE insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
 go
@@ -208,8 +215,10 @@ go
 
 EXEC insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
 go
+
 SELECT * FROM [COSMICOS].[HechosPrincipal]
 GO
+
 DROP VIEW V_circuitos_mas_peligrosos_por_año
 GO
 
@@ -220,9 +229,55 @@ SELECT H.CIRCUITO_CODIGO, CIRCUITO_NOMBRE, DESCRIPCION, [Q8_Cant_Incidente_XCirc
 FROM [COSMICOS].[HechosPrincipal] H
 JOIN [COSMICOS].[CIRCUITO] C ON C.CIRCUITO_CODIGO = H.CIRCUITO_CODIGO
 JOIN [COSMICOS].[TIPO_SECTOR] T ON T.SECTOR_TIPO = H.CODIGO_SECTOR
+where Q8_Cant_Incidente_XCircuito_XAnio IS NOT NULL AND H.CODIGO_ESCUDERIA IS NULL
+go
+
+select * from V_circuitos_mas_peligrosos_por_año
+
 ---EL ORDEN EN QUE MUESTRA LOS CIRCUITOS ES EN FUNCION A LA CANTIDAD DE ACCIDENTES (EL PRIMERO DE CADA AÑO  ES EL MAYOR), HECHO EN EL PROCEDURE
 -- ESTRATEGIA: se toman los top 3 de cada año en el procedure para simplificar el procedimiento gracias al cursor, luego de insertados en la tabla de hechos
 -- se le agregan los datos adicionales convenientes para una mejor lectura. 
+-- se filtra con where para que solo traiga los que tienen Q8_Cant_Incidente_XCircuito_XAnio con datos y codigo escuderia null, de esta manera se asegura que se tomen 
+-- las filas correspondietes ya que es no es la unica vista que usa la columna Q8_Cant_Incidente_XCircuito_XAnio con datos. 
 
 --Q9
 --Promedio de incidentes que presenta cada escudería por año en los distintos tipo de sectores. 
+
+
+insert into [COSMICOS].[HechosPrincipal](
+CODIGO_ESCUDERIA, CODIGO_SECTOR, Anio ,Q8_Cant_Incidente_XCircuito_XAnio)
+SELECT E.CODIGO_ESCUDERIA, S.CODIGO_SECTOR, YEAR(CAR.CARRERA_FECHA) AÑO, count(I.CODIGO_INCIDENTE)  --HASTA ACA SE INSERTARON LA CANTIDAD DE INCIDENTES DE CADA ESCUDERIA POR AÑO EN CADA CODIGO_SECTOR (NO TIPO DE SCTOR)
+FROM [COSMICOS].[ESCUDERIA] E																									
+JOIN [COSMICOS].[AUTO] A ON E.CODIGO_ESCUDERIA = A.CODIGO_ESCUDERIA																 --NO HAY SUFICIENTES EJEMPLOS EN LA BASE PARA OBSERVAR UN RESULTADO CONVINCENTE
+JOIN [COSMICOS].[AUTO_POR_INCIDENTE] AI ON A.CODIGO_AUTO = AI.CODIGO_AUTO_POR_CARRERA
+JOIN [COSMICOS].[INCIDENTE] I ON I.CODIGO_INCIDENTE = AI.CODIGO_INCIDENTE
+JOIN [COSMICOS].[CARRERA] CAR ON I.CODIGO_CARRERA = CAR.CODIGO_CARRERA
+JOIN [COSMICOS].[SECTOR] S ON I.CODIGO_SECTOR = S.CODIGO_SECTOR
+GROUP BY E.CODIGO_ESCUDERIA, S.CODIGO_SECTOR, YEAR(CARRERA_FECHA)
+order by 1, 2, 3 desc
+GO
+
+SELECT * FROM [COSMICOS].[HechosPrincipal]
+GO
+
+DROP VIEW V_promedio_incidentes_escuderia_por_año_por_tipo_de_sector
+GO 
+
+CREATE VIEW V_promedio_incidentes_escuderia_por_año_por_tipo_de_sector(   -- aca se va a joinear con el tipo de sector para poder promediar la suma de todos los inicidentes de un tipo de sector y luego dividirlo por los codigos_sector
+CODIGO_ESCUDERIA, NOMBRE_ESCUDERIA, TIPO_SECTOR, AÑO, PROMEDIO_INCIDENTES)
+AS
+SELECT H.CODIGO_ESCUDERIA, E.ESCUDERIA_NOMBRE, DESCRIPCION , H.Anio, SUM(H.Q8_Cant_Incidente_XCircuito_XAnio)/COUNT(H.CODIGO_SECTOR)
+FROM [COSMICOS].HechosPrincipal H 
+JOIN [COSMICOS].ESCUDERIA E ON E.CODIGO_ESCUDERIA = H.CODIGO_ESCUDERIA
+JOIN [COSMICOS].SECTOR S ON S.CODIGO_SECTOR = H.CODIGO_SECTOR
+JOIN [COSMICOS].TIPO_SECTOR T ON T.SECTOR_TIPO = S.SECTOR_TIPO
+WHERE Q8_Cant_Incidente_XCircuito_XAnio IS NOT NULL AND H.CIRCUITO_CODIGO IS NULL
+GROUP BY  H.CODIGO_ESCUDERIA, E.ESCUDERIA_NOMBRE, DESCRIPCION, H.Anio
+GO
+
+SELECT * FROM V_promedio_incidentes_escuderia_por_año_por_tipo_de_sector
+
+--ESTRATEGIA: para poder obtener un promedio correcto se toma la decision de guardar en la tabla de hechos la cantidad de incidentes por año  por cada sector por escuderia, 
+-- con esto luego en la vista se obtienen los datos de la tabla de hechos y teniendo en cuenta la cantidad de codigos de sector que tienen el mimso tipo como descripcion(recta, curva etc) 
+-- y la suma total de incidentes en ese tipo de sector se hace el promedio y se muestra en la vista. Hay muy pocos casos de incidentes para que el promedio de mas de 1 y todos
+-- acontecieron en rectas.
