@@ -55,10 +55,10 @@ CREATE TABLE [COSMICOS].[HechosPrincipal](
 )
 -- faltan las FK
 CREATE TABLE [COSMICOS].[HechosNeumaticos](
-	[ID_HECHO_NEU] INT PRIMARY KEY IDENTITY(1, 1),
-	[CODIGO_AUTO] int ,
-	[CIRCUITO_CODIGO] int,
-	[NUMERO_VUELTA] int null,
+	[ID_HECHO_NEU] INT PRIMARY KEY IDENTITY(1, 1) ,
+	[CODIGO_AUTO] int REFERENCES [COSMICOS].[DIMENSION_AUTO],
+	[CIRCUITO_CODIGO] int  REFERENCES [COSMICOS].[DIMENSION_CIRCUITO],
+	[NUMERO_VUELTA] int null ,
 	[AUTO_COMBUSTIBLE] decimal(18,6) null,
 	[DESGASTE_MOTOR] decimal(18,6) null,
 	[DESGASTE_CAJA] decimal(18,6) null,
@@ -71,6 +71,7 @@ CREATE TABLE [COSMICOS].[HechosNeumaticos](
 	[DESGASTE_FRENO_3] decimal(18,2) null,
 	[DESGASTE_FRENO_4] decimal(18,2) null
 )
+
 
 
 
@@ -88,12 +89,10 @@ INSERT INTO [COSMICOS].[DIMENSION_AUTO] SELECT
   [AUTO_NUMERO] ,
   [CODIGO_PILOTO] ,
   [CODIGO_ESCUDERIA] ,
-  M.[MOTOR_NRO_SERIE],
-  C.[CAJA_NRO_SERIE] 
+  [MOTOR_NRO_SERIE],
+  [CAJA_NRO_SERIE] 
   FROM [COSMICOS].[AUTO] A
   JOIN [COSMICOS].[AUTO_POR_CARRERA] AC ON AC.CODIGO_AUTO = A.CODIGO_AUTO 
-  JOIN [COSMICOS].[MOTOR] M ON M.MOTOR_NRO_SERIE = AC.MOTOR_NRO_SERIE
-  JOIN [COSMICOS].[CAJA] C ON C.CAJA_NRO_SERIE = AC.CAJA_NRO_SERIE
 
 --dimension_circuito
 INSERT INTO [COSMICOS].[DIMENSION_CIRCUITO] SELECT
@@ -167,6 +166,63 @@ order by sum(p.PARADA_BOX_TIEMPO) desc
 
 --Q8
 --Los 3 circuitos más peligrosos del año, en función mayor cantidad de incidentes. 
+---------------------------------------------------------------------------------------------------
+--DELETE FROM [COSMICOS].[HechosPrincipal] WHERE Anio IS NOT NULL and CODIGO_SECTOR is not null
+--go
+
+DROP PROCEDURE insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
+go
+
+create procedure insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
+as begin
+	declare @anio int
+	declare @contador int
+	declare  top3_circuitos cursor for
+	SELECT DISTINCT YEAR(CARRERA_FECHA) FROM [COSMICOS].CARRERA ORDER BY 1 DESC
+	
+	open top3_circuitos
+	fetch next FROM top3_circuitos 
+	into @anio
+
+	while @@FETCH_STATUS = 0
+	begin
+		insert into [COSMICOS].[HechosPrincipal] ([CIRCUITO_CODIGO], [CODIGO_SECTOR], Anio,Q8_Cant_Incidente_XCircuito_XAnio)
+		select TOP 3  C.CIRCUITO_CODIGO, [SECTOR_TIPO], YEAR(CAR.CARRERA_FECHA),COUNT(CODIGO_INCIDENTE) 
+		FROM [COSMICOS].[CIRCUITO] C 
+		JOIN [COSMICOS].[SECTOR] S ON C.CIRCUITO_CODIGO = S.CIRCUITO_CODIGO
+		JOIN [COSMICOS].[INCIDENTE] I ON S.CODIGO_SECTOR = I.CODIGO_SECTOR 
+		JOIN [COSMICOS].[CARRERA] CAR ON CAR.CIRCUITO_CODIGO = C.CIRCUITO_CODIGO WHERE C.CIRCUITO_CODIGO in(
+		SELECT C2.CIRCUITO_CODIGO 
+		FROM [COSMICOS].[CIRCUITO] C2
+		JOIN  [COSMICOS].[CARRERA] CAR ON C2.CIRCUITO_CODIGO = CAR.CIRCUITO_CODIGO
+		WHERE YEAR(CAR.CARRERA_FECHA) = @anio)
+		GROUP BY C.CIRCUITO_CODIGO, C.CIRCUITO_NOMBRE,[SECTOR_TIPO], YEAR(CAR.CARRERA_FECHA)
+		ORDER BY 3 DESC,4 DESC
+	fetch next FROM top3_circuitos 
+	into @anio
+	end
+	CLOSE top3_circuitos
+DEALLOCATE  top3_circuitos
+end
+go
+
+EXEC insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
+go
+SELECT * FROM [COSMICOS].[HechosPrincipal]
+GO
+DROP VIEW V_circuitos_mas_peligrosos_por_año
+GO
+
+CREATE VIEW V_circuitos_mas_peligrosos_por_año(
+CODIGO_CICUITO , NOMBRE_CIRCUITO , TIPO_DE_SECTOR , CANT_INCIDENTES, AÑO
+)AS
+SELECT H.CIRCUITO_CODIGO, CIRCUITO_NOMBRE, DESCRIPCION, [Q8_Cant_Incidente_XCircuito_XAnio], ANIO
+FROM [COSMICOS].[HechosPrincipal] H
+JOIN [COSMICOS].[CIRCUITO] C ON C.CIRCUITO_CODIGO = H.CIRCUITO_CODIGO
+JOIN [COSMICOS].[TIPO_SECTOR] T ON T.SECTOR_TIPO = H.CODIGO_SECTOR
+---EL ORDEN EN QUE MUESTRA LOS CIRCUITOS ES EN FUNCION A LA CANTIDAD DE ACCIDENTES (EL PRIMERO DE CADA AÑO  ES EL MAYOR), HECHO EN EL PROCEDURE
+-- ESTRATEGIA: se toman los top 3 de cada año en el procedure para simplificar el procedimiento gracias al cursor, luego de insertados en la tabla de hechos
+-- se le agregan los datos adicionales convenientes para una mejor lectura. 
 
 --Q9
 --Promedio de incidentes que presenta cada escudería por año en los distintos tipo de sectores. 
