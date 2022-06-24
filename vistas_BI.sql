@@ -19,6 +19,10 @@ order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio
 
 --Q4
 --Máxima velocidad alcanzada por cada auto en cada tipo de sector de cada circuito. 
+CREATE VIEW MaxVelocidadAutoSectorCircuito as
+select HP.id_auto,HP.CIRCUITO_CODIGO, DS.SECTOR_TIPO ,HP.Q4_Max_Velocidad_XAuto_XSector_XCircuito from Cosmicos.HechosPrincipal HP
+JOIN COSMICOS.DIMENSION_SECTOR DS on DS.CODIGO_SECTOR = HP.CODIGO_SECTOR
+GO
 
 
 --Q5
