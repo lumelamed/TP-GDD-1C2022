@@ -22,9 +22,9 @@ CREATE TABLE [COSMICOS].[DIMENSION_ESCUDERIA] (
   --[ESCUDERIA_NACIONALIDAD] varchar(50)
 )
 GO
--- GDD TE ODIO --ME TOO
+
 CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
-  [CODIGO_AUTO] int PRIMARY KEY ), --agregado por nosotros
+  [CODIGO_AUTO] int  PRIMARY KEY , --agregado por nosotros
   [AUTO_NUMERO] int NOT NULL,
   --[AUTO_MODELO] nvarchar(255),
   [CODIGO_PILOTO] int NOT NULL,
@@ -37,7 +37,7 @@ GO
 
 CREATE TABLE [COSMICOS].[HechosPrincipal](
 	[hecho_id] int PRIMARY KEY IDENTITY(1, 1),
-	 [CODIGO_AUTO] int REFERENCES [COSMICOS].[DIMENSION_AUTO] ,
+	 [id_auto] int REFERENCES [COSMICOS].[DIMENSION_AUTO] ,
 	 [CODIGO_ESCUDERIA] int REFERENCES [COSMICOS].[DIMENSION_ESCUDERIA] ,
 	 [CIRCUITO_CODIGO] int  REFERENCES [COSMICOS].[DIMENSION_CIRCUITO],
 	 [CODIGO_SECTOR] int REFERENCES [COSMICOS].[DIMENSION_SECTOR] ,
@@ -85,8 +85,8 @@ INSERT INTO[COSMICOS].[DIMENSION_ESCUDERIA] SELECT
 FROM [COSMICOS].[ESCUDERIA]
 
 --dimension_auto
-INSERT INTO [COSMICOS].[DIMENSION_AUTO] SELECT
-  A.[CODIGO_AUTO], --agregado por nosotros
+INSERT INTO [COSMICOS].[DIMENSION_AUTO]  SELECT
+  AC.[CODIGO_AUTO_POR_CARRERA], --agregado por nosotros
   [AUTO_NUMERO] ,
   [CODIGO_PILOTO] ,
   [CODIGO_ESCUDERIA] ,
@@ -109,6 +109,7 @@ INSERT INTO [COSMICOS].[DIMENSION_SECTOR] SELECT
 FROM [COSMICOS].[SECTOR] S 
 LEFT JOIN  [COSMICOS].[TIPO_SECTOR] T ON S.SECTOR_TIPO = T.SECTOR_TIPO
 
+
 --INSERT EN LOS HECHOS-----------------------------------------------------------------------------------------------------------------------------------------------
 --Q1
 --Desgaste promedio de cada componente de cada auto por vuelta por circuito. 
@@ -120,7 +121,7 @@ LEFT JOIN  [COSMICOS].[TIPO_SECTOR] T ON S.SECTOR_TIPO = T.SECTOR_TIPO
 --Mejor tiempo de vuelta de cada escudería por circuito por año. 
 --El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito. 
 
---SIN CHEQUEAR!!!
+--listop
 insert into COSMICOS.HechosPrincipal (Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO) 
 select TELE_AUTO_TIEMPO_VUELTA , year(C.CARRERA_FECHA) as AÑO_CARRERA , A.CODIGO_AUTO, E.CODIGO_ESCUDERIA, C.CIRCUITO_CODIGO
 from cosmicos.TELEMETRIA T
@@ -156,7 +157,7 @@ order by CODIGO_ESCUDERIA,  AÑO_CARRERA,TELE_AUTO_TIEMPO_VUELTA
 --Q7
 --Los 3 circuitos donde se consume mayor cantidad en tiempo de paradas en boxes. 
 
---SIN CHEQUEAR!!
+--listop, si em da el tiempo el saco el sum e inetnto hacerlo por tiempos individuales
 
 insert into COSMICOS.HechosPrincipal (CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito)
 select  c.CIRCUITO_CODIGO, sum(p.PARADA_BOX_TIEMPO)
