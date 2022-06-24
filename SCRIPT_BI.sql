@@ -120,7 +120,7 @@ LEFT JOIN  [COSMICOS].[TIPO_SECTOR] T ON S.SECTOR_TIPO = T.SECTOR_TIPO
 --Mejor tiempo de vuelta de cada escudería por circuito por año. 
 --El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito. 
 
---SIN CHEQUEAR!!!
+--listop
 insert into COSMICOS.HechosPrincipal (Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO) 
 select TELE_AUTO_TIEMPO_VUELTA , year(C.CARRERA_FECHA) as AÑO_CARRERA , A.CODIGO_AUTO, E.CODIGO_ESCUDERIA, C.CIRCUITO_CODIGO
 from cosmicos.TELEMETRIA T
@@ -156,7 +156,7 @@ order by CODIGO_ESCUDERIA,  AÑO_CARRERA,TELE_AUTO_TIEMPO_VUELTA
 --Q7
 --Los 3 circuitos donde se consume mayor cantidad en tiempo de paradas en boxes. 
 
---SIN CHEQUEAR!!
+--listop, si em da el tiempo el saco el sum e inetnto hacerlo por tiempos individuales
 
 insert into COSMICOS.HechosPrincipal (CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito)
 select  c.CIRCUITO_CODIGO, sum(p.PARADA_BOX_TIEMPO)
