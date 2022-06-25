@@ -1,12 +1,12 @@
 --CREACION DE TABLAS-----------------------------------------------------------------------------------------------------------------------------------------------
 
-CREATE TABLE [COSMICOS].[DIMENSION_CIRCUITO] (
+CREATE TABLE [COSMICOS].[BI_DIMENSION_CIRCUITO] (
   [CIRCUITO_CODIGO] int PRIMARY KEY, --importado de tabla maestra
   [CIRCUITO_NOMBRE] nvarchar(255),
  )
 GO
 
-CREATE TABLE [COSMICOS].[DIMENSION_SECTOR] (
+CREATE TABLE [COSMICOS].[BI_DIMENSION_SECTOR] (
   [CODIGO_SECTOR] int PRIMARY KEY, --importado de tabla maestra
   [SECTOR_DISTANCIA] decimal(18,2),
   [SECTOR_TIPO] nvarchar(255),
@@ -16,14 +16,14 @@ CREATE TABLE [COSMICOS].[DIMENSION_SECTOR] (
 GO
 
 
-CREATE TABLE [COSMICOS].[DIMENSION_ESCUDERIA] (
+CREATE TABLE [COSMICOS].[BI_DIMENSION_ESCUDERIA] (
   [CODIGO_ESCUDERIA] int PRIMARY KEY , --agregado por nosotros
   [ESCUDERIA_NOMBRE] varchar(50),
   --[ESCUDERIA_NACIONALIDAD] varchar(50)
 )
 GO
 
-CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
+CREATE TABLE [COSMICOS].[BI_DIMENSION_AUTO] (
   [CODIGO_AUTO] int  PRIMARY KEY , --agregado por nosotros
   [AUTO_NUMERO] int NOT NULL,
   --[AUTO_MODELO] nvarchar(255),
@@ -35,12 +35,12 @@ CREATE TABLE [COSMICOS].[DIMENSION_AUTO] (
 )
 GO
 
-CREATE TABLE [COSMICOS].[HechosPrincipal](
+CREATE TABLE [COSMICOS].[BI_HechosPrincipal](
 	[hecho_id] int PRIMARY KEY IDENTITY(1, 1),
-	 [id_auto] int REFERENCES [COSMICOS].[DIMENSION_AUTO] ,
-	 [CODIGO_ESCUDERIA] int REFERENCES [COSMICOS].[DIMENSION_ESCUDERIA] ,
-	 [CIRCUITO_CODIGO] int  REFERENCES [COSMICOS].[DIMENSION_CIRCUITO],
-	 [CODIGO_SECTOR] int REFERENCES [COSMICOS].[DIMENSION_SECTOR] ,
+	 [id_auto] int REFERENCES [COSMICOS].[BI_DIMENSION_AUTO] ,
+	 [CODIGO_ESCUDERIA] int REFERENCES [COSMICOS].[BI_DIMENSION_ESCUDERIA] ,
+	 [CIRCUITO_CODIGO] int  REFERENCES [COSMICOS].[BI_DIMENSION_CIRCUITO],
+	 [CODIGO_SECTOR] int REFERENCES [COSMICOS].[BI_DIMENSION_SECTOR] ,
 	 [Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio] decimal(18,10) null,
 	 [Q3_Prom_Consumo_Combustible_XCircuito] decimal(18,2) null,
 	 [Q4_Max_Velocidad_XAuto_XSector_XCircuito] decimal(18,2) null,
@@ -55,10 +55,10 @@ CREATE TABLE [COSMICOS].[HechosPrincipal](
 )
 go
 -- faltan las FK
-CREATE TABLE [COSMICOS].[HechosNeumaticos](
+CREATE TABLE [COSMICOS].[BI_HechosNeumaticos](
 	[ID_HECHO_NEU] INT PRIMARY KEY IDENTITY(1, 1) ,
-	[CODIGO_AUTO] int REFERENCES [COSMICOS].[DIMENSION_AUTO],
-	[CIRCUITO_CODIGO] int  REFERENCES [COSMICOS].[DIMENSION_CIRCUITO],
+	[CODIGO_AUTO] int REFERENCES [COSMICOS].[BI_DIMENSION_AUTO],
+	[CIRCUITO_CODIGO] int  REFERENCES [COSMICOS].[BI_DIMENSION_CIRCUITO],
 	[NUMERO_VUELTA] int null ,
 	[AUTO_COMBUSTIBLE] decimal(18,6) null,
 	[DESGASTE_MOTOR] decimal(18,6) null,
@@ -79,13 +79,13 @@ CREATE TABLE [COSMICOS].[HechosNeumaticos](
 --INSERT EN LAS DIMENSIONES-----------------------------------------------------------------------------------------------------------------------------------------------
 --dimension_escuderia
 
-INSERT INTO[COSMICOS].[DIMENSION_ESCUDERIA] SELECT
+INSERT INTO[COSMICOS].[BI_DIMENSION_ESCUDERIA] SELECT
   [CODIGO_ESCUDERIA] , --agregado por nosotros
   [ESCUDERIA_NOMBRE] 
 FROM [COSMICOS].[ESCUDERIA]
 
 --dimension_auto
-INSERT INTO [COSMICOS].[DIMENSION_AUTO]  SELECT
+INSERT INTO [COSMICOS].[BI_DIMENSION_AUTO]  SELECT
   AC.[CODIGO_AUTO_POR_CARRERA], --agregado por nosotros
   [AUTO_NUMERO] ,
   [CODIGO_PILOTO] ,
@@ -96,13 +96,13 @@ INSERT INTO [COSMICOS].[DIMENSION_AUTO]  SELECT
   JOIN [COSMICOS].[AUTO_POR_CARRERA] AC ON AC.CODIGO_AUTO = A.CODIGO_AUTO 
 
 --dimension_circuito
-INSERT INTO [COSMICOS].[DIMENSION_CIRCUITO] SELECT
+INSERT INTO [COSMICOS].[BI_DIMENSION_CIRCUITO] SELECT
   [CIRCUITO_CODIGO] ,
   [CIRCUITO_NOMBRE] 
   FROM [COSMICOS].[CIRCUITO]
 
 --dimension_sector
-INSERT INTO [COSMICOS].[DIMENSION_SECTOR] SELECT
+INSERT INTO [COSMICOS].[BI_DIMENSION_SECTOR] SELECT
   [CODIGO_SECTOR] , --importado de tabla maestra
   [SECTOR_DISTANCIA] ,
   [DESCRIPCION]
@@ -122,7 +122,7 @@ LEFT JOIN  [COSMICOS].[TIPO_SECTOR] T ON S.SECTOR_TIPO = T.SECTOR_TIPO
 --El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito. 
 
 --listop
-insert into COSMICOS.HechosPrincipal (Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO) 
+insert into COSMICOS.BI_HechosPrincipal (Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO) 
 select TELE_AUTO_TIEMPO_VUELTA , year(C.CARRERA_FECHA) as AÑO_CARRERA , A.CODIGO_AUTO, E.CODIGO_ESCUDERIA, C.CIRCUITO_CODIGO
 from cosmicos.TELEMETRIA T
 join COSMICOS.AUTO_POR_CARRERA AC on T.CODIGO_AUTO_POR_CARRERA = AC.CODIGO_AUTO_POR_CARRERA
@@ -146,7 +146,7 @@ order by CODIGO_ESCUDERIA,  AÑO_CARRERA,TELE_AUTO_TIEMPO_VUELTA
 
 --Q4
 --Máxima velocidad alcanzada por cada auto en cada tipo de sector de cada circuito. 
-insert into Cosmicos.HechosPrincipal (id_auto,CODIGO_SECTOR,CIRCUITO_CODIGO,Q4_Max_Velocidad_XAuto_XSector_XCircuito) 
+insert into Cosmicos.BI_HechosPrincipal (id_auto,CODIGO_SECTOR,CIRCUITO_CODIGO,Q4_Max_Velocidad_XAuto_XSector_XCircuito) 
 (SELECT AC.CODIGO_AUTO,TS.SECTOR_TIPO,C.CIRCUITO_CODIGO ,MAX(TELE_AUTO_VELOCIDAD)  from COSMICOS.TELEMETRIA as T
 JOIN COSMICOS.SECTOR as S on S.CODIGO_SECTOR = T.CODIGO_SECTOR
 JOIN COSMICOS.CIRCUITO as C on C.CIRCUITO_CODIGO = S.CIRCUITO_CODIGO
@@ -156,7 +156,7 @@ GROUP BY AC.CODIGO_AUTO,TS.SECTOR_TIPO ,C.CIRCUITO_CODIGO)
 
 --Q5
 --Tiempo promedio que tardó cada escudería en las paradas por cuatrimestre. 
-INSERT INTO Cosmicos.HechosPrincipal (CODIGO_ESCUDERIA,Q5_Tiempo_Prom_XEscuderia_Xanio_XSector,Cuatrimestre,Anio)
+INSERT INTO Cosmicos.BI_HechosPrincipal (CODIGO_ESCUDERIA,Q5_Tiempo_Prom_XEscuderia_Xanio_XSector,Cuatrimestre,Anio)
 
 (SELECT E.CODIGO_ESCUDERIA,AVG(PARADA_BOX_TIEMPO) "Promedio", CASE  
 	WHEN MONTH(CR.CARRERA_FECHA) >= 1 AND MONTH(CARRERA_FECHA) <= 4 THEN 1
@@ -177,7 +177,7 @@ GROUP BY E.CODIGO_ESCUDERIA,CASE
 	
 --Q6
 --Cantidad de paradas por circuito por escudería por año. 
-INSERT INTO Cosmicos.HechosPrincipal (CIRCUITO_CODIGO,CODIGO_ESCUDERIA ,Q6_Cant_Paradas_XCirc_Xanio_XEscuderia,Anio)
+INSERT INTO Cosmicos.BI_HechosPrincipal (CIRCUITO_CODIGO,CODIGO_ESCUDERIA ,Q6_Cant_Paradas_XCirc_Xanio_XEscuderia,Anio)
 (select CI.CIRCUITO_CODIGO,E.CODIGO_ESCUDERIA,COUNT(PB.CODIGO_PARADA_BOX) AS "Cantidad",
 YEAR(CR.CARRERA_FECHA) as "ANIO"
 from COSMICOS.PARADA_BOX PB
@@ -194,7 +194,7 @@ group by CI.CIRCUITO_CODIGO,E.CODIGO_ESCUDERIA,YEAR(CR.CARRERA_FECHA))
 
 --listop, si em da el tiempo el saco el sum e inetnto hacerlo por tiempos individuales
 
-insert into COSMICOS.HechosPrincipal (CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito)
+insert into COSMICOS.BI_HechosPrincipal (CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito)
 select  c.CIRCUITO_CODIGO, sum(p.PARADA_BOX_TIEMPO)
 from cosmicos.PARADA_BOX p 
 join  cosmicos.CARRERA c on c.CODIGO_CARRERA =p.CODIGO_CARRERA
@@ -207,10 +207,10 @@ order by sum(p.PARADA_BOX_TIEMPO) desc
 --Q8
 --Los 3 circuitos más peligrosos del año, en función mayor cantidad de incidentes. 
 ---------------------------------------------------------------------------------------------------
---DELETE FROM [COSMICOS].[HechosPrincipal] WHERE Anio IS NOT NULL and CODIGO_SECTOR is not null
+--DELETE FROM [COSMICOS].[BI_HechosPrincipal] WHERE Anio IS NOT NULL and CODIGO_SECTOR is not null
 --go
 
-DELETE FROM [COSMICOS].HechosPrincipal
+DELETE FROM [COSMICOS].[BI_HechosPrincipal]
 GO 
 
 DROP PROCEDURE insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
@@ -229,7 +229,7 @@ as begin
 
 	while @@FETCH_STATUS = 0
 	begin
-		insert into [COSMICOS].[HechosPrincipal] ([CIRCUITO_CODIGO], [CODIGO_SECTOR], Anio,Q8_Cant_Incidente_XCircuito_XAnio)
+		insert into [COSMICOS].[BI_HechosPrincipal] ([CIRCUITO_CODIGO], [CODIGO_SECTOR], Anio,Q8_Cant_Incidente_XCircuito_XAnio)
 		select TOP 3  C.CIRCUITO_CODIGO, [SECTOR_TIPO], YEAR(CAR.CARRERA_FECHA),COUNT(CODIGO_INCIDENTE) 
 		FROM [COSMICOS].[CIRCUITO] C 
 		JOIN [COSMICOS].[SECTOR] S ON C.CIRCUITO_CODIGO = S.CIRCUITO_CODIGO
@@ -252,7 +252,7 @@ go
 EXEC insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
 go
 
-SELECT * FROM [COSMICOS].[HechosPrincipal]
+SELECT * FROM [COSMICOS].[BI_HechosPrincipal]
 GO
 
 DROP VIEW V_circuitos_mas_peligrosos_por_año
@@ -262,7 +262,7 @@ CREATE VIEW V_circuitos_mas_peligrosos_por_año(
 CODIGO_CICUITO , NOMBRE_CIRCUITO , TIPO_DE_SECTOR , CANT_INCIDENTES, AÑO
 )AS
 SELECT H.CIRCUITO_CODIGO, CIRCUITO_NOMBRE, DESCRIPCION, [Q8_Cant_Incidente_XCircuito_XAnio], ANIO
-FROM [COSMICOS].[HechosPrincipal] H
+FROM [COSMICOS].[BI_HechosPrincipal] H
 JOIN [COSMICOS].[CIRCUITO] C ON C.CIRCUITO_CODIGO = H.CIRCUITO_CODIGO
 JOIN [COSMICOS].[TIPO_SECTOR] T ON T.SECTOR_TIPO = H.CODIGO_SECTOR
 where Q8_Cant_Incidente_XCircuito_XAnio IS NOT NULL AND H.CODIGO_ESCUDERIA IS NULL
@@ -280,7 +280,7 @@ select * from V_circuitos_mas_peligrosos_por_año
 --Promedio de incidentes que presenta cada escudería por año en los distintos tipo de sectores. 
 
 
-insert into [COSMICOS].[HechosPrincipal](
+insert into [COSMICOS].[BI_HechosPrincipal](
 CODIGO_ESCUDERIA, CODIGO_SECTOR, Anio ,Q8_Cant_Incidente_XCircuito_XAnio)
 SELECT E.CODIGO_ESCUDERIA, S.CODIGO_SECTOR, YEAR(CAR.CARRERA_FECHA) AÑO, count(I.CODIGO_INCIDENTE)  --HASTA ACA SE INSERTARON LA CANTIDAD DE INCIDENTES DE CADA ESCUDERIA POR AÑO EN CADA CODIGO_SECTOR (NO TIPO DE SCTOR)
 FROM [COSMICOS].[ESCUDERIA] E																									
@@ -293,7 +293,7 @@ GROUP BY E.CODIGO_ESCUDERIA, S.CODIGO_SECTOR, YEAR(CARRERA_FECHA)
 order by 1, 2, 3 desc
 GO
 
-SELECT * FROM [COSMICOS].[HechosPrincipal]
+SELECT * FROM [COSMICOS].[BI_HechosPrincipal]
 GO
 
 DROP VIEW V_promedio_incidentes_escuderia_por_año_por_tipo_de_sector
