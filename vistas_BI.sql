@@ -10,7 +10,7 @@
 
 create view MejorTiempoVuelta_XEscuderia_XCircuito_Xanio as
 select top 3  Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio as tiempo,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO 
-from COSMICOS.HechosPrincipal 
+from COSMICOS.BI_HechosPrincipal 
 where Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio is not null
 order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio 
 
@@ -21,24 +21,24 @@ order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio
 --Q4
 --Máxima velocidad alcanzada por cada auto en cada tipo de sector de cada circuito. 
 CREATE VIEW MaxVelocidadAutoSectorCircuito as
-select HP.id_auto,HP.CIRCUITO_CODIGO, DS.SECTOR_TIPO ,HP.Q4_Max_Velocidad_XAuto_XSector_XCircuito from Cosmicos.HechosPrincipal HP
-JOIN COSMICOS.DIMENSION_SECTOR DS on DS.CODIGO_SECTOR = HP.CODIGO_SECTOR
+select HP.id_auto,HP.CIRCUITO_CODIGO, DS.SECTOR_TIPO ,HP.Q4_Max_Velocidad_XAuto_XSector_XCircuito from Cosmicos.BI_HechosPrincipal HP
+JOIN COSMICOS.BI_DIMENSION_SECTOR DS on DS.CODIGO_SECTOR = HP.CODIGO_SECTOR
 GO
 
 
 --Q5
 --Tiempo promedio que tardó cada escudería en las paradas por cuatrimestre. 
 CREATE VIEW TiempoPromioParadaCuatri as
-		select Q5_Tiempo_Prom_XEscuderia_Xanio_XSector,Cuatrimestre,Anio from Cosmicos.HechosPrincipal HP
-		join COSMICOS.DIMENSION_ESCUDERIA ES on ES.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA  
+		select Q5_Tiempo_Prom_XEscuderia_Xanio_XSector,Cuatrimestre,Anio from Cosmicos.BI_HechosPrincipal HP
+		join COSMICOS.BI_DIMENSION_ESCUDERIA ES on ES.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA  
 	go
   
 -Q6
 --Cantidad de paradas por circuito por escudería por año. 
 CREATE VIEW COSMICOS.cantParadasCircEscAnio as
-		select DE.ESCUDERIA_NOMBRE,DI.CIRCUITO_NOMBRE, HP.Q6_Cant_Paradas_XCirc_Xanio_XEscuderia from Cosmicos.HechosPrincipal HP
-		join COSMICOS.DIMENSION_ESCUDERIA DE ON DE.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA 
-		JOIN COSMICOS.DIMENSION_CIRCUITO DI ON DI.CIRCUITO_CODIGO = HP.CIRCUITO_CODIGO
+		select DE.ESCUDERIA_NOMBRE,DI.CIRCUITO_NOMBRE, HP.Q6_Cant_Paradas_XCirc_Xanio_XEscuderia from Cosmicos.BI_HechosPrincipal HP
+		join COSMICOS.BI_DIMENSION_ESCUDERIA DE ON DE.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA 
+		JOIN COSMICOS.BI_DIMENSION_CIRCUITO DI ON DI.CIRCUITO_CODIGO = HP.CIRCUITO_CODIGO
 	GO
 
 --Q7
@@ -47,7 +47,7 @@ CREATE VIEW COSMICOS.cantParadasCircEscAnio as
 
 create view Tiempo_XParada_XCircuito as
 select top 3 CIRCUITO_CODIGO,  Q7_Tiempo_XParada_XCircuito as tiempo_parada
-from COSMICOS.HechosPrincipal
+from COSMICOS.BI_HechosPrincipal
 where Q7_Tiempo_XParada_XCircuito is not null 
 order by Q7_Tiempo_XParada_XCircuito desc
 
