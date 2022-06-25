@@ -17,6 +17,13 @@ order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio
 
 --Q3
 --Los 3 de circuitos con mayor consumo de combustible promedio. 
+CREATE VIEW COSMICOS.Circuitos_Mayor_Consumo AS
+SELECT TOP 3 H.CIRCUITO_CODIGO, C.CIRCUITO_NOMBRE, Q3_Prom_Consumo_Combustible_XCircuito AS COMBUSTIBLE_PROMEDIO 
+FROM COSMICOS.BI_HechosPrincipal H
+JOIN COSMICOS.BI_DIMENSION_CIRCUITO C ON H.CIRCUITO_CODIGO = C.CIRCUITO_CODIGO
+ORDER BY Q3_Prom_Consumo_Combustible_XCircuito
+-- dado que el dato de las telemetrias de "Combustible", corresponde a "Cantidad de combustible actual en el auto en lts",
+-- entonces si tienen poco combustible es porque consumieron mas
 
 --Q4
 --Máxima velocidad alcanzada por cada auto en cada tipo de sector de cada circuito. 
