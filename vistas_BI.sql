@@ -9,10 +9,12 @@
 --El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito. 
 
 create view MejorTiempoVuelta_XEscuderia_XCircuito_Xanio as
-select top 3  Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio as tiempo,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO 
-from COSMICOS.BI_HechosPrincipal 
+select top 3  Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio as tiempo, Anio ,HP.CODIGO_AUTO, DA.CODIGO_PILOTO, DA.AUTO_NUMERO, DA.MOTOR_NRO_SERIE, DA.CAJA_NRO_SERIE, HP.CODIGO_ESCUDERIA, DE.ESCUDERIA_NOMBRE CIRCUITO_CODIGO 
+from COSMICOS.BI_HechosPrincipal HP
+join COSMICOS.BI_DIMENSION_AUTO DA on DA.CODIGO_AUTO = HP.CODIGO_AUTO
+JOIN COSMICOS.BI_DIMENSION_ESCUDERIA DE ON DE.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA
 where Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio is not null
-order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio 
+order by Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio
 
 
 --Q3
