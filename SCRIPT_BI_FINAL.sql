@@ -240,7 +240,6 @@ ORDER BY AC.CODIGO_AUTO, T.TELE_AUTO_NUMERO_VUELTA, C.CIRCUITO_CODIGO
 
 --Q2
 --Mejor tiempo de vuelta de cada escudería por circuito por año. 
---El mejor tiempo está dado por el mínimo tiempo en que un auto logra realizar una vuelta de un circuito. 
 
 --listop
 insert into COSMICOS.BI_HechosPrincipal (Q2_MejorTiempoVuelta_XEscuderia_XCircuito_Xanio,Anio ,CODIGO_AUTO, CODIGO_ESCUDERIA, CIRCUITO_CODIGO) 
@@ -336,9 +335,6 @@ order by sum(p.PARADA_BOX_TIEMPO) desc
 --Q8
 --Los 3 circuitos más peligrosos del año, en función mayor cantidad de incidentes. 
 ---------------------------------------------------------------------------------------------------
-
-DELETE FROM [COSMICOS].[BI_HechosPrincipal]
-GO 
 
 DROP PROCEDURE insetar_en_hehos_top3_circuitos_peligrosos_por_anio 
 go
