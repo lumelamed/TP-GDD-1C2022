@@ -33,7 +33,7 @@ CREATE VIEW TiempoPromioParadaCuatri as
 		join COSMICOS.BI_DIMENSION_ESCUDERIA ES on ES.CODIGO_ESCUDERIA = HP.CODIGO_ESCUDERIA  
 	go
   
--Q6
+--Q6
 --Cantidad de paradas por circuito por escudería por año. 
 CREATE VIEW COSMICOS.cantParadasCircEscAnio as
 		select DE.ESCUDERIA_NOMBRE,DI.CIRCUITO_NOMBRE, HP.Q6_Cant_Paradas_XCirc_Xanio_XEscuderia from Cosmicos.BI_HechosPrincipal HP
