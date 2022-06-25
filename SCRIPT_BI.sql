@@ -387,17 +387,6 @@ go
 DROP VIEW V_circuitos_mas_peligrosos_por_año
 GO
 
-CREATE VIEW V_circuitos_mas_peligrosos_por_año(
-CODIGO_CICUITO , NOMBRE_CIRCUITO , TIPO_DE_SECTOR , CANT_INCIDENTES, AÑO
-)AS
-SELECT H.CIRCUITO_CODIGO, CIRCUITO_NOMBRE, DESCRIPCION, [Q8_Cant_Incidente_XCircuito_XAnio], ANIO
-FROM [COSMICOS].[BI_HechosPrincipal] H
-JOIN [COSMICOS].[CIRCUITO] C ON C.CIRCUITO_CODIGO = H.CIRCUITO_CODIGO
-JOIN [COSMICOS].[TIPO_SECTOR] T ON T.SECTOR_TIPO = H.CODIGO_SECTOR
-where Q8_Cant_Incidente_XCircuito_XAnio IS NOT NULL AND H.CODIGO_ESCUDERIA IS NULL
-go
-
---select * from V_circuitos_mas_peligrosos_por_año
 
 ---EL ORDEN EN QUE MUESTRA LOS CIRCUITOS ES EN FUNCION A LA CANTIDAD DE ACCIDENTES (EL PRIMERO DE CADA AÑO  ES EL MAYOR), HECHO EN EL PROCEDURE
 -- ESTRATEGIA: se toman los top 3 de cada año en el procedure para simplificar el procedimiento gracias al cursor, luego de insertados en la tabla de hechos
@@ -428,19 +417,7 @@ GO
 DROP VIEW V_promedio_incidentes_escuderia_por_año_por_tipo_de_sector
 GO 
 
-CREATE VIEW V_promedio_incidentes_escuderia_por_año_por_tipo_de_sector(   -- aca se va a joinear con el tipo de sector para poder promediar la suma de todos los inicidentes de un tipo de sector y luego dividirlo por los codigos_sector
-CODIGO_ESCUDERIA, NOMBRE_ESCUDERIA, TIPO_SECTOR, AÑO, PROMEDIO_INCIDENTES)
-AS
-SELECT H.CODIGO_ESCUDERIA, E.ESCUDERIA_NOMBRE, DESCRIPCION , H.Anio, SUM(H.Q8_Cant_Incidente_XCircuito_XAnio)/COUNT(H.CODIGO_SECTOR)
-FROM [COSMICOS].HechosPrincipal H 
-JOIN [COSMICOS].ESCUDERIA E ON E.CODIGO_ESCUDERIA = H.CODIGO_ESCUDERIA
-JOIN [COSMICOS].SECTOR S ON S.CODIGO_SECTOR = H.CODIGO_SECTOR
-JOIN [COSMICOS].TIPO_SECTOR T ON T.SECTOR_TIPO = S.SECTOR_TIPO
-WHERE Q8_Cant_Incidente_XCircuito_XAnio IS NOT NULL AND H.CIRCUITO_CODIGO IS NULL
-GROUP BY  H.CODIGO_ESCUDERIA, E.ESCUDERIA_NOMBRE, DESCRIPCION, H.Anio
-GO
 
---SELECT * FROM V_promedio_incidentes_escuderia_por_año_por_tipo_de_sector
 
 --ESTRATEGIA: para poder obtener un promedio correcto se toma la decision de guardar en la tabla de hechos la cantidad de incidentes por año  por cada sector por escuderia, 
 -- con esto luego en la vista se obtienen los datos de la tabla de hechos y teniendo en cuenta la cantidad de codigos de sector que tienen el mimso tipo como descripcion(recta, curva etc) 
