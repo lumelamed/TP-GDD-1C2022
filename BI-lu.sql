@@ -13,9 +13,9 @@ ORDER BY AVG(T.TELE_AUTO_COMBUSTIBLE)
 
 
 -- Desgaste promedio de cada componente de cada auto por vuelta por circuito. 
--- Tener en cuenta que, para el cálculo del desgaste de los neumáticos, 
--- se toma la diferencia de mm del mismo entre la medición inicial y final de cada vuelta. 
--- Lo mismo aplica para el desgaste de frenos. Para el cálculo del desgaste del motor se toma en cuenta la perdida de potencia
+-- Tener en cuenta que, para el cÃ¡lculo del desgaste de los neumÃ¡ticos, 
+-- se toma la diferencia de mm del mismo entre la mediciÃ³n inicial y final de cada vuelta. 
+-- Lo mismo aplica para el desgaste de frenos. Para el cÃ¡lculo del desgaste del motor se toma en cuenta la perdida de potencia
 CREATE VIEW COSMICOS.Desgastes_Por_Auto_Por_Vuelta_Por_Circuito AS
 SELECT AC.CODIGO_AUTO, T.TELE_AUTO_NUMERO_VUELTA, C.CIRCUITO_CODIGO,
 		(SELECT (MAX(TELE_NEUMATICO_PROFUNDIDAD) - MIN(TELE_NEUMATICO_PROFUNDIDAD))
@@ -32,7 +32,7 @@ SELECT AC.CODIGO_AUTO, T.TELE_AUTO_NUMERO_VUELTA, C.CIRCUITO_CODIGO,
 		GROUP BY T1.CODIGO_AUTO_POR_CARRERA, T1.TELE_AUTO_NUMERO_VUELTA
 	) AS DESGASTE_NEUMATICO1, -- hay 1 desgaste de neumatico y freno por auto por vuelta por circuito, 
 							  -- asi que no hacemos literalmente un promedio, sino que, como indica la consigna
-							  -- el "desgaste promedio" la diferencia de mm entre la medición inicial y final de cada vuelta
+							  -- el "desgaste promedio" la diferencia de mm entre la mediciÃ³n inicial y final de cada vuelta
 							  -- es decir, "max mm (medicion inicial) - min mm (medicion final)"
 	(SELECT (MAX(TELE_NEUMATICO_PROFUNDIDAD) - MIN(TELE_NEUMATICO_PROFUNDIDAD))
 		FROM COSMICOS.TELEMETRIA T1
